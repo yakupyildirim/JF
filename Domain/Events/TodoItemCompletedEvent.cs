@@ -1,9 +1,9 @@
-    public class TodoItemCompletedEvent : DomainEvent
-    {
-        public TodoItemCompletedEvent(TodoItem item)
-        {
-            Item = item;
-        }
+public class TodoItemCompletedEvent : DomainEvent
+{
+	public TodoItemCompletedEvent(TodoItem item)
+	{
+		Item = item;
+	}
 
-        public TodoItem Item { get; }
-    }
+	public TodoItem Item { get; }
+}

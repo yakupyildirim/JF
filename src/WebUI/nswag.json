@@ -1,4 +1,4 @@
-﻿{
+{
   "runtime": "NetCore31",
   "defaultVariables": null,
   "documentGenerator": {
@@ -60,7 +60,7 @@
       "moduleName": "",
       "namespace": "",
       "typeScriptVersion": 2.7,
-      "template": "Angular",
+      "template": "Fetch",
       "promiseType": "Promise",
       "httpClass": "HttpClient",
       "withCredentials": false,
@@ -108,9 +108,9 @@
       "typeNameGeneratorType": null,
       "propertyNameGeneratorType": null,
       "enumNameGeneratorType": null,
-      "serviceHost": null,
+      "serviceHost": "https://localhost:5001",
       "serviceSchemes": null,
-      "output": "ClientApp/src/app/web-api-client.ts"
+      "output": "ClientApp/src/components/web-api-client.ts"
     }
   }
 }

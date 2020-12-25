@@ -74,3 +74,18 @@ This layer is a single page application based on Angular 9 and ASP.NET Core 3.1.
 
 ## License
 free
+
+
+
+dotnet ef migrations add "SampleMigration" --project src\Infrastructure --startup-project src\WebUI --output-dir Persistence\Migrations
+dotnet ef database update                  --project src\Infrastructure --startup-project src\WebUI
+dotnet ef database drop                  --project src\Infrastructure --startup-project src\WebUI
+
+cd src/WebUI/ClientApp/src        npm start
+cd src/WebUI                      dotnet run
+
+https://localhost:5001/api/index.html?url=/api/specification.json
+https://localhost:5001
+
+
+

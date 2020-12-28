@@ -26,7 +26,7 @@ export class FetchData extends Component {
         </thead>
         <tbody>
           {forecasts.map(forecast =>
-            <tr key={forecast.date.toString()}>
+            <tr key={forecast.id}>
               <td>{forecast.date.toString()}</td>
               <td>{forecast.temperatureC}</td>
               <td>{forecast.temperatureF}</td>

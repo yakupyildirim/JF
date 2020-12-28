@@ -1,4 +1,8 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using CleanArchitecture.Application.Common.Interfaces;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,29 +11,27 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Application.WeatherForecasts.Queries.GetWeatherForecasts
 {
-    public class GetWeatherForecastsQuery : IRequest<IEnumerable<WeatherForecast>>
-    {
-    }
+	public class GetWeatherForecastsQuery : IRequest<IEnumerable<WeatherForecastDto>>
+	{
+	}
 
-    public class GetWeatherForecastsQueryHandler : IRequestHandler<GetWeatherForecastsQuery, IEnumerable<WeatherForecast>>
-    {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+	public class GetWeatherForecastsQueryHandler : IRequestHandler<GetWeatherForecastsQuery, IEnumerable<WeatherForecastDto>>
+	{
+		private readonly IApplicationDbContext _context;
+		private readonly IMapper _mapper;
+		public GetWeatherForecastsQueryHandler(IApplicationDbContext context, IMapper mapper)
+		{
+			_context = context;
+			_mapper = mapper;
+		}
 
-        public Task<IEnumerable<WeatherForecast>> Handle(GetWeatherForecastsQuery request, CancellationToken cancellationToken)
-        {
-            var rng = new Random();
+		public async Task<IEnumerable<WeatherForecastDto>> Handle(GetWeatherForecastsQuery request, CancellationToken cancellationToken)
+		{
+			return await _context.WeatherForecasts
+				.OrderBy(x => x.Date)
+				.ProjectTo<WeatherForecastDto>(_mapper.ConfigurationProvider)
+				.ToListAsync(cancellationToken);
 
-            var vm = Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            });
-
-            return Task.FromResult(vm);
-        }
-    }
+		}
+	}
 }

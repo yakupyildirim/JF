@@ -461,13 +461,18 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
+                    "$ref": "#/components/schemas/WeatherForecastDto"
                   }
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     }
   },
@@ -680,10 +685,14 @@
           }
         }
       },
-      "WeatherForecast": {
+      "WeatherForecastDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
           "date": {
             "type": "string",
             "format": "date-time"

@@ -1,9 +1,12 @@
 ﻿using System;
+using CleanArchitecture.Application.Common.Mappings;
+using CleanArchitecture.Domain.Entities;
 
 namespace CleanArchitecture.Application.WeatherForecasts.Queries.GetWeatherForecasts
 {
-    public class WeatherForecast
+    public class WeatherForecastDto : IMapFrom<WeatherForecast>
     {
+		public int Id { get; set; }
         public DateTime Date { get; set; }
 
         public int TemperatureC { get; set; }

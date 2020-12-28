@@ -65,9 +65,9 @@ export class Login extends Component {
 
     async login(returnUrl) {
         const state = { returnUrl };
-        console.log("state :" + state);
+     
         const result = await authService.signIn(state);
-        console.log("login result:" + result);
+   
         switch (result.status) {
             case AuthenticationResultStatus.Redirect:
                 break;

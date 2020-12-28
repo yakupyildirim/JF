@@ -179,11 +179,11 @@ export class AuthorizeService {
             return;
         }
 
-        let response = await fetch(ApplicationPaths.ApiAuthorizationClientConfigurationUrl);
+        let response = await fetch("https://localhost:5001"+ ApplicationPaths.ApiAuthorizationClientConfigurationUrl);
         if (!response.ok) {
             throw new Error(`Could not load settings for '${ApplicationName}'`);
         }
-
+        
         let settings = await response.json();
         settings.automaticSilentRenew = true;
         settings.includeIdTokenInSilentRenew = true;

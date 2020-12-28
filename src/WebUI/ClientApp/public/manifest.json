@@ -1,6 +1,6 @@
 {
-  "short_name": "WebUI",
-  "name": "WebUI",
+  "short_name": "CleanArchitecture.WebUI",
+  "name": "CleanArchitecture.WebUI",
   "icons": [
     {
       "src": "favicon.ico",

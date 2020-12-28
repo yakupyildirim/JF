@@ -29,7 +29,7 @@ namespace CleanArchitecture.Infrastructure
 			}
 			*/
 			services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(options =>
-			                      options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
+														options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
 									b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
 			services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());

@@ -475,7 +475,7 @@ export class TodoListsClient implements ITodoListsClient {
 }
 
 export interface IWeatherForecastClient {
-    get(): Promise<WeatherForecast[]>;
+    get(): Promise<WeatherForecastDto[]>;
 }
 
 export class WeatherForecastClient implements IWeatherForecastClient {
@@ -488,7 +488,7 @@ export class WeatherForecastClient implements IWeatherForecastClient {
         this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
     }
 
-    get(): Promise<WeatherForecast[]> {
+    get(): Promise<WeatherForecastDto[]> {
         let url_ = this.baseUrl + "/api/WeatherForecast";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -504,7 +504,7 @@ export class WeatherForecastClient implements IWeatherForecastClient {
         });
     }
 
-    protected processGet(response: Response): Promise<WeatherForecast[]> {
+    protected processGet(response: Response): Promise<WeatherForecastDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -514,7 +514,7 @@ export class WeatherForecastClient implements IWeatherForecastClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(WeatherForecast.fromJS(item));
+                    result200!.push(WeatherForecastDto.fromJS(item));
             }
             return result200;
             });
@@ -523,7 +523,7 @@ export class WeatherForecastClient implements IWeatherForecastClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<WeatherForecast[]>(<any>null);
+        return Promise.resolve<WeatherForecastDto[]>(<any>null);
     }
 }
 
@@ -1010,13 +1010,14 @@ export interface IUpdateTodoListCommand {
     title?: string | undefined;
 }
 
-export class WeatherForecast implements IWeatherForecast {
+export class WeatherForecastDto implements IWeatherForecastDto {
+    id?: number;
     date?: Date;
     temperatureC?: number;
     temperatureF?: number;
     summary?: string | undefined;
 
-    constructor(data?: IWeatherForecast) {
+    constructor(data?: IWeatherForecastDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1027,6 +1028,7 @@ export class WeatherForecast implements IWeatherForecast {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
             this.temperatureC = _data["temperatureC"];
             this.temperatureF = _data["temperatureF"];
@@ -1034,15 +1036,16 @@ export class WeatherForecast implements IWeatherForecast {
         }
     }
 
-    static fromJS(data: any): WeatherForecast {
+    static fromJS(data: any): WeatherForecastDto {
         data = typeof data === 'object' ? data : {};
-        let result = new WeatherForecast();
+        let result = new WeatherForecastDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["date"] = this.date ? this.date.toISOString() : <any>undefined;
         data["temperatureC"] = this.temperatureC;
         data["temperatureF"] = this.temperatureF;
@@ -1051,7 +1054,8 @@ export class WeatherForecast implements IWeatherForecast {
     }
 }
 
-export interface IWeatherForecast {
+export interface IWeatherForecastDto {
+    id?: number;
     date?: Date;
     temperatureC?: number;
     temperatureF?: number;

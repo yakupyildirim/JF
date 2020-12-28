@@ -9,9 +9,9 @@
 			"type": "coreclr",
 			"request": "launch",
 			"preLaunchTask": "build",
-			"program": "${workspaceFolder}/bin/Debug/<target-framework>/<project-name.dll>",
+			"program": "${workspaceFolder}/src/WebUI/bin/Debug/netcoreapp3.1/CleanArchitecture.WebUI.dll",
 			"args": [],
-			"cwd": "${workspaceFolder}",
+			"cwd": "${workspaceFolder}/src/WebUI",
 			"stopAtEntry": false,
 			"console": "internalConsole"
 		},

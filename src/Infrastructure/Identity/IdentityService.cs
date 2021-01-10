@@ -3,6 +3,7 @@ using CleanArchitecture.Application.Common.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace CleanArchitecture.Infrastructure.Identity
@@ -31,6 +32,10 @@ namespace CleanArchitecture.Infrastructure.Identity
             };
 
             var result = await _userManager.CreateAsync(user, password);
+
+            await _userManager.AddClaimAsync(user, new Claim("userName", user.UserName));
+            await _userManager.AddClaimAsync(user, new Claim("email", user.Email));
+            await _userManager.AddClaimAsync(user, new Claim("role", "user"));
 
             return (result.ToApplicationResult(), user.Id);
         }

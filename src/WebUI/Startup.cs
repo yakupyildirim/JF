@@ -1,6 +1,8 @@
 using CleanArchitecture.Application;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Infrastructure;
+using CleanArchitecture.Infrastructure.Extensions;
+using CleanArchitecture.Infrastructure.Identity;
 using CleanArchitecture.Infrastructure.Persistence;
 using CleanArchitecture.WebUI.Filters;
 using CleanArchitecture.WebUI.Services;
@@ -18,118 +20,123 @@ using System.Linq;
 
 namespace CleanArchitecture.WebUI
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+	public class Startup
+	{
+		public Startup(IConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
 
-        public IConfiguration Configuration { get; }
+		public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-          
-             services.AddCors();
-             
-            services.AddApplication();
-            services.AddInfrastructure(Configuration);
+		// This method gets called by the runtime. Use this method to add services to the container.
+		public void ConfigureServices(IServiceCollection services)
+		{
+			services
+			.AddDatabaseConfiguration(Configuration.GetConnectionString("DefaultConnection"))
+			.AddIdentityServerConfig(Configuration)
+			.AddServices<ApplicationUser>();
 
-            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+			services.AddCors();
 
-            services.AddHttpContextAccessor();
+			services.AddApplication();
 
-            services.AddHealthChecks()
-                .AddDbContextCheck<ApplicationDbContext>();
+			services.AddInfrastructure(Configuration);
 
-            services.AddControllersWithViews(options =>
-                options.Filters.Add(new ApiExceptionFilterAttribute()))
-                    .AddFluentValidation();
+			services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
-            services.AddRazorPages();
+			services.AddHttpContextAccessor();
 
-            // In production, the React files will be served from this directory
-                      // Customise default API behaviour
-            services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
-            
-            services.AddOpenApiDocument(configure =>
-            {
-                configure.Title = "CleanArchitecture API";
-                configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
-                {
-                    Type = OpenApiSecuritySchemeType.ApiKey,
-                    Name = "Authorization",
-                    In = OpenApiSecurityApiKeyLocation.Header,
-                    Description = "Type into the textbox: Bearer {your JWT token}."
-                });
+			services.AddHealthChecks()
+					.AddDbContextCheck<ApplicationDbContext>();
 
-                configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
-            });
+			services.AddControllersWithViews(options =>
+					options.Filters.Add(new ApiExceptionFilterAttribute()))
+							.AddFluentValidation();
 
-            
-        }
+			services.AddRazorPages();
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-             app.UseCors(x => x
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetIsOriginAllowed(origin => true) // allow any origin
-                .AllowCredentials()); // allow credentials
-            
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+			// In production, the React files will be served from this directory
+			// Customise default API behaviour
+			services.Configure<ApiBehaviorOptions>(options =>
+			{
+				options.SuppressModelStateInvalidFilter = true;
+			});
+			services.AddSpaStaticFiles(configuration =>
+			{
+				configuration.RootPath = "ClientApp/build";
+			});
 
-            app.UseHealthChecks("/health");
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
-            app.UseSwaggerUi3(settings =>
-            {
-                settings.Path = "/api";
-                settings.DocumentPath = "/api/specification.json";
-            });
+			services.AddOpenApiDocument(configure =>
+			{
+				configure.Title = "CleanArchitecture API";
+				configure.AddSecurity("JWT", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+				{
+					Type = OpenApiSecuritySchemeType.ApiKey,
+					Name = "Authorization",
+					In = OpenApiSecurityApiKeyLocation.Header,
+					Description = "Type into the textbox: Bearer {your JWT token}."
+				});
 
-            app.UseRouting();
+				configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
+			});
 
-            app.UseAuthentication();
-            app.UseIdentityServer();
-            app.UseAuthorization();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
-            });
 
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
+		}
 
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });
-        }
-    }
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		{
+			app.UseCors(x => x
+				 .AllowAnyMethod()
+				 .AllowAnyHeader()
+				 .SetIsOriginAllowed(origin => true) // allow any origin
+				 .AllowCredentials()); // allow credentials
+
+			if (env.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+				app.UseDatabaseErrorPage();
+			}
+			else
+			{
+				app.UseExceptionHandler("/Error");
+				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+				app.UseHsts();
+			}
+
+			app.UseHealthChecks("/health");
+			app.UseHttpsRedirection();
+			app.UseStaticFiles();
+			app.UseSpaStaticFiles();
+			app.UseSwaggerUi3(settings =>
+			{
+				settings.Path = "/api";
+				settings.DocumentPath = "/api/specification.json";
+			});
+
+			app.UseRouting();
+
+			app.UseAuthentication();
+			app.UseIdentityServer();
+			app.UseAuthorization();
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllerRoute(
+									name: "default",
+									pattern: "{controller}/{action=Index}/{id?}");
+				endpoints.MapRazorPages();
+			});
+
+			app.UseSpa(spa =>
+			{
+				spa.Options.SourcePath = "ClientApp";
+
+				if (env.IsDevelopment())
+				{
+					spa.UseReactDevelopmentServer(npmScript: "start");
+				}
+			});
+		}
+	}
 }

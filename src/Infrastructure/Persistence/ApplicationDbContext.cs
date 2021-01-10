@@ -4,7 +4,9 @@ using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Infrastructure.Identity;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Options;
 using System.Linq;
 using System.Reflection;
@@ -13,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Infrastructure.Persistence
 {
-	public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, IApplicationDbContext
+	public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>, IApplicationDbContext
 	{
 		private readonly ICurrentUserService _currentUserService;
 		private readonly IDateTime _dateTime;
@@ -21,10 +23,9 @@ namespace CleanArchitecture.Infrastructure.Persistence
 
 		public ApplicationDbContext(
 				DbContextOptions options,
-				IOptions<OperationalStoreOptions> operationalStoreOptions,
 				ICurrentUserService currentUserService,
 				IDomainEventService domainEventService,
-				IDateTime dateTime) : base(options, operationalStoreOptions)
+				IDateTime dateTime) : base(options)
 		{
 			_currentUserService = currentUserService;
 			_domainEventService = domainEventService;

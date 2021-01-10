@@ -25,13 +25,15 @@ namespace CleanArchitecture.WebUI
 				{
 					var context = services.GetRequiredService<ApplicationDbContext>();
 
-					
+
 					if (context.Database.IsNpgsql())
 					{
-							context.Database.Migrate();
-					}                   
-					
+						context.Database.Migrate();
+					}
+
 					var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+
+					ApplicationDbContextSeed.EnsureSeedData(scope.ServiceProvider);
 
 					// await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager);
 					// await ApplicationDbContextSeed.SeedSampleDataAsync(context);

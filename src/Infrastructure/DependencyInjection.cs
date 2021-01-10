@@ -28,26 +28,33 @@ namespace CleanArchitecture.Infrastructure
 									b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 			}
 			*/
-			services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(options =>
+
+
+			services.AddDbContext<ApplicationDbContext>(options =>
 														options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"),
 									b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
 			services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
+
 			services.AddScoped<IDomainEventService, DomainEventService>();
 
+/*
 			services.AddDefaultIdentity<ApplicationUser>()
-					.AddEntityFrameworkStores<ApplicationDbContext>();
+						.AddEntityFrameworkStores<ApplicationDbContext>();
 
 			services.AddIdentityServer()
-					.AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+				.AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+*/
 
 			services.AddTransient<IDateTime, DateTimeService>();
 			services.AddTransient<IIdentityService, IdentityService>();
 			services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
 
+
 			services.AddAuthentication()
 					.AddIdentityServerJwt();
+
 
 			return services;
 		}

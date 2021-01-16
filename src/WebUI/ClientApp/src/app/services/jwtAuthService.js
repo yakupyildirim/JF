@@ -1,5 +1,17 @@
 import axios from "axios";
 import localStorageService from "./localStorageService";
+import Qs from "qs";
+
+var Querystring = require('querystring');
+
+const data = {
+  grant_type: "password",
+  client_id: "panel_api",
+  client_secret: "JFPanel",
+  scope: "rest_auth",
+  username: "yakupyildirim@hotmail.com.tr",
+  password: "deneme"
+};
 
 class JwtAuthService {
 
@@ -19,17 +31,18 @@ class JwtAuthService {
   // User should have role property
   // You can define roles in app/auth/authRoles.js
   loginWithEmailAndPassword = (email, password) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(this.user);
-      }, 1000);
-    }).then(data => {
-      // Login successful
-      // Save token
-      this.setSession(data.token);
-      // Set user
-      this.setUser(data);
-      return data;
+    axios.post("https://localhost:5001/connect/token",
+    Querystring.stringify(data))   
+    .then(response => {
+       console.log(response.data);
+       console.log('userresponse ' + response.data.access_token); 
+       this.setSession(response.data.access_token);
+       // Set user
+       this.setUser(response.data);
+       return response.data;
+     })   
+    .catch((error) => {
+       console.log('error ' + error);   
     });
   };
 
@@ -65,7 +78,7 @@ class JwtAuthService {
   };
 
   // Save user to localstorage
-  setUser = (user) => {    
+  setUser = (user) => {
     localStorageService.setItem("auth_user", user);
   }
   // Remove user from localstorage

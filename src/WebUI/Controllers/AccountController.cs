@@ -1,6 +1,5 @@
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Account.Commands.CreateAccount;
 using CleanArchitecture.Application.Common.Models;
 using CleanArchitecture.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -8,32 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.WebUI.Controllers
 {
-	public class AccountController : Controller
+	public class AccountController : ApiController
 	{
-		private readonly UserManager<ApplicationUser> _userManager;
-
-		public AccountController(UserManager<ApplicationUser> userManager)
-		{
-			_userManager = userManager;
-
-		}
-
 
 		[HttpPost("/api/user/register")]
-		public async Task<(Result Result, string UserId)> Register([FromBody] RegisterModel request)
+		public async Task<ActionResult<Result>> Register(CreateAccountCommand command)
 		{
-			IdentityService service = new IdentityService(_userManager);
-			var result = service.CreateUserAsync(request.Email, request.Password);
-			return await result;
-	
+			return await Mediator.Send(command);
 		}
 
-	}
+		[HttpPost("/api/user/delete")]
+		public async Task<ActionResult<Result>> Delete(DeleteAccountCommand command)
+		{
+			return await Mediator.Send(command);
+		}
 
-	public class RegisterModel
-	{
-		public string Email { get; set; }
-		[Required]
-		public string Password { get; set; }
 	}
 }

@@ -8,55 +8,64 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Infrastructure.Identity
 {
-    public class IdentityService : IIdentityService
-    {
-        private readonly UserManager<ApplicationUser> _userManager;
+	public class IdentityService : IIdentityService
+	{
+		private readonly UserManager<ApplicationUser> _userManager;
 
-        public IdentityService(UserManager<ApplicationUser> userManager)
-        {
-            _userManager = userManager;
-        }
+		public IdentityService(UserManager<ApplicationUser> userManager)
+		{
+			_userManager = userManager;
+		}
 
-        public async Task<string> GetUserNameAsync(string userId)
-        {
-            var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
+		public async Task<string> GetUserNameAsync(string userId)
+		{
+			var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
 
-            return user.UserName;
-        }
-        public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
-        {
-            var user = new ApplicationUser
-            {
-                UserName = userName,
-                Email = userName,
-            };
+			return user.UserName;
+		}
+		public async Task<Result> CreateUserAsync(string userName, string email, string password)
+		{
 
-            var result = await _userManager.CreateAsync(user, password);
+			var user = new ApplicationUser
+			{
+				UserName = userName,
+				Email = email,
+			};
 
-            await _userManager.AddClaimAsync(user, new Claim("userName", user.UserName));
-            await _userManager.AddClaimAsync(user, new Claim("email", user.Email));
-            await _userManager.AddClaimAsync(user, new Claim("role", "user"));
+			var result = await _userManager.CreateAsync(user, password);
 
-            return (result.ToApplicationResult(), user.Id);
-        }
+			await _userManager.AddClaimAsync(user, new Claim("userName", user.UserName));
+			await _userManager.AddClaimAsync(user, new Claim("email", user.Email));
+			await _userManager.AddClaimAsync(user, new Claim("role", "user"));
 
-        public async Task<Result> DeleteUserAsync(string userId)
-        {
-            var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
+			if (result.Succeeded)
+			{
+				Result.Data = user.Id;
+				return Result.Success();
+			}
+			else
+			{
+				return Result.Failure(result.Errors.Select(e => e.Description));
+			}
+		}
 
-            if (user != null)
-            {
-                return await DeleteUserAsync(user);
-            }
+		public async Task<Result> DeleteUserAsync(string userId)
+		{
+			var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
-            return Result.Success();
-        }
+			if (user != null)
+			{
+				return await DeleteUserAsync(user);
+			}
 
-        public async Task<Result> DeleteUserAsync(ApplicationUser user)
-        {
-            var result = await _userManager.DeleteAsync(user);
+			return Result.Success();
+		}
 
-            return result.ToApplicationResult();
-        }
-    }
+		public async Task<Result> DeleteUserAsync(ApplicationUser user)
+		{
+			var result = await _userManager.DeleteAsync(user);
+
+			return result.ToApplicationResult();
+		}
+	}
 }

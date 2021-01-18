@@ -1,6 +1,6 @@
 import axios from "axios";
 import localStorageService from "./localStorageService";
-import Qs from "qs";
+import jwt from 'jwt-decode';
 
 var Querystring = require('querystring');
 
@@ -9,13 +9,14 @@ const data = {
   client_id: "panel_api",
   client_secret: "JFPanel",
   scope: "rest_auth",
-  username: "yakupyildirim@hotmail.com.tr",
+  username: "yakup",
   password: "deneme"
 };
 
 class JwtAuthService {
 
   // Dummy user object just for the demo
+  /*
   user = {
     userId: "1",
     role: 'ADMIN',
@@ -25,7 +26,7 @@ class JwtAuthService {
     age: 25,
     token: "faslkhfh423oiu4h4kj432rkj23h432u49ufjaklj423h4jkhkjh"
   }
-
+*/
   // You need to send http request with email and passsword to your server in this method
   // Your server will return user object & a Token
   // User should have role property
@@ -34,12 +35,12 @@ class JwtAuthService {
     axios.post("https://localhost:5001/connect/token",
     Querystring.stringify(data))   
     .then(response => {
-       console.log(response.data);
-       console.log('userresponse ' + response.data.access_token); 
-       this.setSession(response.data.access_token);
-       // Set user
-       this.setUser(response.data);
-       return response.data;
+       const user = jwt(response.data.access_token);
+       user.token = response.data.access_token;
+       console.log("token:"+user.token);
+       this.setSession(user.token);
+       this.setUser(user);
+       return user;
      })   
     .catch((error) => {
        console.log('error ' + error);   
@@ -48,15 +49,16 @@ class JwtAuthService {
 
   // You need to send http requst with existing token to your server to check token is valid
   // This method is being used when user logged in & app is reloaded
+  
   loginWithToken = () => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        resolve(this.user);
+        resolve(localStorageService.getItem());
       }, 100);
     }).then(data => {
       // Token is valid
-      this.setSession(data.token);
-      this.setUser(data);
+      //this.setSession(data.token);
+      //this.setUser(data);
       return data;
     });
   };
@@ -80,6 +82,10 @@ class JwtAuthService {
   // Save user to localstorage
   setUser = (user) => {
     localStorageService.setItem("auth_user", user);
+  }
+
+  getUser = () => {
+    localStorageService.getItem("auth_user");
   }
   // Remove user from localstorage
   removeUser = () => {

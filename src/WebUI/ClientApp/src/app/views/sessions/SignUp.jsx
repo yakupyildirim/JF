@@ -8,12 +8,14 @@ import {
 } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { connect } from "react-redux";
+import { userRegister } from "../../redux/actions/AccountActions";
+import PropTypes from "prop-types";
 
 class SignUp extends Component {
   state = {
-    username: "",
-    email: "",
-    password: "",
+    username: "yakup",
+    email: "yakupyildirim@hotmail.com.tr",
+    password: "deneme",
     agreement: ""
   };
 
@@ -24,7 +26,9 @@ class SignUp extends Component {
     });
   };
 
-  handleFormSubmit = event => {};
+  handleFormSubmit = event => {
+    this.props.userRegister({...this.state})
+  };
   render() {
     let { username, email, password } = this.state;
     return (
@@ -117,7 +121,9 @@ class SignUp extends Component {
 }
 
 const mapStateToProps = state => ({
-  // setUser: PropTypes.func.isRequired
+  userRegister: PropTypes.func.isRequired,
+  account: state.account
 });
 
-export default connect(mapStateToProps, {})(SignUp);
+export default connect(mapStateToProps, {userRegister})(SignUp);
+

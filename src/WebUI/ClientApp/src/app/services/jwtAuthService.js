@@ -1,8 +1,8 @@
 import axios from "axios";
 import localStorageService from "./localStorageService";
-import jwt from 'jwt-decode';
+import jwt from "jwt-decode";
 
-var Querystring = require('querystring');
+var Querystring = require("querystring");
 
 const data = {
   grant_type: "password",
@@ -10,11 +10,25 @@ const data = {
   client_secret: "JFPanel",
   scope: "rest_auth",
   username: "yakup",
-  password: "deneme"
+  password: "deneme",
+};
+
+const isExpired = (jwtToken) => {
+  if (!jwtToken) {
+    return null;
+  }
+
+  var jwt = JSON.parse(atob(jwtToken.split(".")[1]));
+  var exp = (jwt && jwt.exp && jwt.exp * 1000) || null;
+
+  if (!exp) {
+    return false;
+  }
+
+  return Date.now() > exp;
 };
 
 class JwtAuthService {
-
   // Dummy user object just for the demo
   /*
   user = {
@@ -31,45 +45,45 @@ class JwtAuthService {
   // Your server will return user object & a Token
   // User should have role property
   // You can define roles in app/auth/authRoles.js
-  loginWithEmailAndPassword = (email, password) => {
-    axios.post("https://localhost:5001/connect/token",
-    Querystring.stringify(data))   
-    .then(response => {
-       const user = jwt(response.data.access_token);
-       user.token = response.data.access_token;
-       console.log("token:"+user.token);
-       this.setSession(user.token);
-       this.setUser(user);
-       return user;
-     })   
-    .catch((error) => {
-       console.log('error ' + error);   
-    });
+  loginWithEmailAndPassword = async (email, password) => {
+    var response = await axios.post(
+      "https://localhost:5001/connect/token",
+      Querystring.stringify(data)
+    );
+    try {
+      const user = jwt(response.data.access_token);
+      user.token = response.data.access_token;
+      console.log("token:" + user.token);
+      this.setSession(user.token);
+      this.setUser(user);
+      console.log(user);
+      return user;
+    } catch (error) {
+      console.log("error " + error);
+    }
   };
 
   // You need to send http requst with existing token to your server to check token is valid
   // This method is being used when user logged in & app is reloaded
-  
+
   loginWithToken = () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(localStorageService.getItem());
-      }, 100);
-    }).then(data => {
-      // Token is valid
-      //this.setSession(data.token);
-      //this.setUser(data);
-      return data;
-    });
+    var data = localStorageService.getItem("auth_user");
+
+    if (data != null && isExpired(data.token)) {
+      data = null;
+      this.logout();
+    }
+
+    return data;
   };
 
   logout = () => {
     this.setSession(null);
     this.removeUser();
-  }
+  };
 
   // Set token to all http request header, so you don't need to attach everytime
-  setSession = token => {
+  setSession = (token) => {
     if (token) {
       localStorage.setItem("jwt_token", token);
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
@@ -82,15 +96,15 @@ class JwtAuthService {
   // Save user to localstorage
   setUser = (user) => {
     localStorageService.setItem("auth_user", user);
-  }
+  };
 
   getUser = () => {
     localStorageService.getItem("auth_user");
-  }
+  };
   // Remove user from localstorage
   removeUser = () => {
     localStorage.removeItem("auth_user");
-  }
+  };
 }
 
 export default new JwtAuthService();

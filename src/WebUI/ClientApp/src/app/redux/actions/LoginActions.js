@@ -18,6 +18,7 @@ export function loginWithEmailAndPassword({ email, password }) {
       .loginWithEmailAndPassword(email, password)
       .then(user => {
         dispatch(setUserData(user));
+        console.log("loginaction:"+user.token);
 
         history.push({
           pathname: "/"

@@ -11,9 +11,6 @@ namespace CleanArchitecture.Application.Common.Interfaces
 
 		DbSet<TodoItem> TodoItems { get; set; }
 
-		DbSet<WeatherForecast> WeatherForecasts { get; set; }
-
-
 		Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 	}
 }

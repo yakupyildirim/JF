@@ -1,6 +1,6 @@
 ﻿using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Infrastructure.Files;
-using CleanArchitecture.Infrastructure.Hubs;
+using CleanArchitecture.Infrastructure.Communication.Notification;
 using CleanArchitecture.Infrastructure.Identity;
 using CleanArchitecture.Infrastructure.Persistence;
 using CleanArchitecture.Infrastructure.Services;
@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using CleanArchitecture.Infrastructure.Communication.Email;
+using CleanArchitecture.Infrastructure.Communication.Sms;
 
 namespace CleanArchitecture.Infrastructure
 {
@@ -40,17 +42,19 @@ namespace CleanArchitecture.Infrastructure
 
 			services.AddScoped<IDomainEventService, DomainEventService>();
 
-/*
-			services.AddDefaultIdentity<ApplicationUser>()
-						.AddEntityFrameworkStores<ApplicationDbContext>();
+			/*
+						services.AddDefaultIdentity<ApplicationUser>()
+									.AddEntityFrameworkStores<ApplicationDbContext>();
 
-			services.AddIdentityServer()
-				.AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
-*/
+						services.AddIdentityServer()
+							.AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+			*/
 
 			services.AddTransient<IDateTime, DateTimeService>();
 			services.AddTransient<IIdentityService, IdentityService>();
-			services.AddTransient<INotificationService, NotificationService>();
+			services.AddTransient<ICommunication, ChartSender>();
+			services.AddTransient<ICommunication, EmailSender>();
+			services.AddTransient<ICommunication, SmsSender>();
 			services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
 
 
@@ -59,6 +63,15 @@ namespace CleanArchitecture.Infrastructure
 
 			services.AddSignalR();
 
+			var emailConfig = configuration
+								.GetSection("EmailConfiguration")
+								.Get<EmailConfiguration>();
+			services.AddSingleton(emailConfig);
+
+			var smsConfig = configuration
+								.GetSection("SmsConfiguration")
+								.Get<SmsConfiguration>();
+			services.AddSingleton(smsConfig);
 
 			return services;
 		}

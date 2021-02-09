@@ -2,7 +2,7 @@ using CleanArchitecture.Application;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Extensions;
-using CleanArchitecture.Infrastructure.Hubs;
+using CleanArchitecture.Infrastructure.Communication.Notification;
 using CleanArchitecture.Infrastructure.Identity;
 using CleanArchitecture.Infrastructure.Persistence;
 using CleanArchitecture.WebUI.Filters;
@@ -128,7 +128,7 @@ namespace CleanArchitecture.WebUI
 									pattern: "{controller}/{action=Index}/{id?}");
 				endpoints.MapRazorPages();
 
-				endpoints.MapHub<SampleHub>("/sampleHub");
+				endpoints.MapHub<ChartHub>("/chartHub");
 			});
 
 			app.UseSpa(spa =>

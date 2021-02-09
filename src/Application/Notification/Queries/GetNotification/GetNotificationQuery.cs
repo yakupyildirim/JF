@@ -7,25 +7,22 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Application.Notification.Queries.GetNotification
 {
-	public class GetNotificationQuery : IRequest
+	public class GetNotificationQuery : IRequest<Result>
 	{
 	}
 
-	public class GetNotficationQueryHandler : IRequestHandler<GetNotificationQuery>
+	public class GetNotficationQueryHandler : IRequestHandler<GetNotificationQuery, Result>
 	{
-		private readonly INotificationService _notificationService;
+		private readonly ICommunication _communication;
 
-		public GetNotficationQueryHandler(INotificationService notificationService, IMapper mapper)
+		public GetNotficationQueryHandler(ICommunication communication, IMapper mapper)
 		{
-			_notificationService = notificationService;
+			_communication = communication;
 		}
 
-		public async Task<Unit> Handle(GetNotificationQuery request, CancellationToken cancellationToken)
+		public async Task<Result> Handle(GetNotificationQuery request, CancellationToken cancellationToken)
 		{
-			await _notificationService.GetSampleMessages();
-
-			return  Unit.Value;
-
+			return await _communication.Send();
 		}
 	}
 }

@@ -4,13 +4,13 @@ using CleanArchitecture.Application.Common.Models;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 
-namespace CleanArchitecture.Infrastructure.Communication.Sms
+namespace CleanArchitecture.Infrastructure.Communication.SmsSender
 {
-	public class SmsSender : ICommunication
+	public class SmsService : ICommunication
 	{
 		private readonly SmsConfiguration _smsConfig;
 
-		public SmsSender(SmsConfiguration smsConfig)
+		public SmsService(SmsConfiguration smsConfig)
 		{
 			_smsConfig = smsConfig;
 		}

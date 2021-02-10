@@ -1,4 +1,4 @@
-namespace CleanArchitecture.Infrastructure.Communication.Sms
+namespace CleanArchitecture.Infrastructure.Communication.SmsSender
 {
 	public class SmsConfiguration
 	{

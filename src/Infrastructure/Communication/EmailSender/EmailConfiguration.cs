@@ -1,4 +1,4 @@
-namespace CleanArchitecture.Infrastructure.Communication.Email
+namespace CleanArchitecture.Infrastructure.Communication.EmailSender
 {
 	public class EmailConfiguration
 	{

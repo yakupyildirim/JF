@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CleanArchitecture.Infrastructure.Communication.Notification
+namespace CleanArchitecture.Infrastructure.Communication.NotificationSender
 {
-	public class ChartSender : ICommunication
+	public class ChartService : ICommunication
 	{
 		private readonly IHubContext<ChartHub> _chartHub;
 
-		public ChartSender(IHubContext<ChartHub> chartHub)
+		public ChartService(IHubContext<ChartHub> chartHub)
 		{
 			_chartHub = chartHub;
 		}

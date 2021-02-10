@@ -1,14 +1,12 @@
 using System.Collections.Generic;
-using System.Linq;
 using CleanArchitecture.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
-using MimeKit;
 
-namespace CleanArchitecture.Infrastructure.Communication.Email
+namespace CleanArchitecture.Application.Common.Models
 {
 	public class Email : IMessage
 	{
-		public List<MailboxAddress> To { get; set; }
+		public IEnumerable<string> To { get; set; }
 		public string Subject { get; set; }
 		public string Content { get; set; }
 
@@ -16,9 +14,7 @@ namespace CleanArchitecture.Infrastructure.Communication.Email
 
 		public Email(IEnumerable<string> to, string subject, string content, IFormFileCollection attachments)
 		{
-			To = new List<MailboxAddress>();
-
-			To.AddRange(to.Select(x => new MailboxAddress(string.Empty, x)));
+			To = to;
 			Subject = subject;
 			Content = content;
 			Attachments = attachments;

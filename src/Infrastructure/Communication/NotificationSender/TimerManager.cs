@@ -5,7 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CleanArchitecture.Infrastructure.Communication.Notification
+namespace CleanArchitecture.Infrastructure.Communication.NotificationSender
 {
 	public class TimerManager
 	{

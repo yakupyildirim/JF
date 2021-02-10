@@ -22,7 +22,8 @@ namespace CleanArchitecture.Application.Notification.Queries.GetNotification
 
 		public async Task<Result> Handle(GetNotificationQuery request, CancellationToken cancellationToken)
 		{
-			return await _communication.Send();
+		   Sms sms = new Sms();
+			return await _communication.Send(sms);
 		}
 	}
 }

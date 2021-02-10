@@ -8,11 +8,11 @@ namespace CleanArchitecture.Application.Common.Interfaces
 	{
 		public virtual Task<Result> Send(IMessage message)
 		{
-			throw new NotImplementedException();	
+			return null;
 		}
 		public virtual Task<Result> Send()
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 	}
 }

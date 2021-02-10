@@ -9,8 +9,9 @@ namespace CleanArchitecture.WebUI.Controllers
 	{
 
 		[HttpPost("/api/notification")]
-		public async Task<ActionResult<Result>> Get(GetNotificationQuery query)
+		public async Task<ActionResult<Result>> Get()
 		{
+			GetNotificationQuery query = new GetNotificationQuery();
 			return await Mediator.Send(query);
 		}
 

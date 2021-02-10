@@ -1,6 +1,5 @@
 ﻿using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Infrastructure.Files;
-using CleanArchitecture.Infrastructure.Communication.Notification;
 using CleanArchitecture.Infrastructure.Identity;
 using CleanArchitecture.Infrastructure.Persistence;
 using CleanArchitecture.Infrastructure.Services;
@@ -8,8 +7,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using CleanArchitecture.Infrastructure.Communication.Email;
-using CleanArchitecture.Infrastructure.Communication.Sms;
+using CleanArchitecture.Infrastructure.Communication.EmailSender;
+using CleanArchitecture.Infrastructure.Communication.SmsSender;
+using CleanArchitecture.Infrastructure.Communication.NotificationSender;
 
 namespace CleanArchitecture.Infrastructure
 {
@@ -52,9 +52,9 @@ namespace CleanArchitecture.Infrastructure
 
 			services.AddTransient<IDateTime, DateTimeService>();
 			services.AddTransient<IIdentityService, IdentityService>();
-			services.AddTransient<ICommunication, ChartSender>();
-			services.AddTransient<ICommunication, EmailSender>();
-			services.AddTransient<ICommunication, SmsSender>();
+			services.AddTransient<ICommunication, ChartService>();
+			services.AddTransient<ICommunication, EmailService>();
+			services.AddTransient<ICommunication, SmsService>();
 			services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
 
 

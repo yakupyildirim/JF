@@ -1,7 +1,7 @@
 
 using System.Collections.Generic;
 
-namespace CleanArchitecture.Infrastructure.Communication.Notification
+namespace CleanArchitecture.Infrastructure.Communication.NotificationSender
 {
 	public class Chart
 	{

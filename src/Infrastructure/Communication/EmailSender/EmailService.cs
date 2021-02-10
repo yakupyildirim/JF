@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,13 +7,13 @@ using CleanArchitecture.Application.Common.Models;
 using MailKit.Net.Smtp;
 using MimeKit;
 
-namespace CleanArchitecture.Infrastructure.Communication.Email
+namespace CleanArchitecture.Infrastructure.Communication.EmailSender
 {
-	public class EmailSender : ICommunication
+	public class EmailService : ICommunication
 	{
 		private readonly EmailConfiguration _emailConfig;
 
-		public EmailSender(EmailConfiguration emailConfig)
+		public EmailService(EmailConfiguration emailConfig)
 		{
 			_emailConfig = emailConfig;
 		}
@@ -26,9 +27,13 @@ namespace CleanArchitecture.Infrastructure.Communication.Email
 
 		private MimeMessage CreateEmailMessage(Email message)
 		{
+			var To =  new List<MailboxAddress>();
+			To.AddRange(message.To.Select(x => new MailboxAddress(string.Empty, x)));
+
 			var emailMessage = new MimeMessage();
 			emailMessage.From.Add(new MailboxAddress(string.Empty, _emailConfig.From));
-			emailMessage.To.AddRange(message.To);
+
+			emailMessage.To.AddRange(To);
 			emailMessage.Subject = message.Subject;
 
 			var bodyBuilder = new BodyBuilder { HtmlBody = string.Format("<h2 style='color:red;'>{0}</h2>", message.Content) };

@@ -1,6 +1,6 @@
 using CleanArchitecture.Application.Common.Interfaces;
 
-namespace CleanArchitecture.Infrastructure.Communication.Sms
+namespace CleanArchitecture.Application.Common.Models
 {
 	public class Sms : IMessage
 	{

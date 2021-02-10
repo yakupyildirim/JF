@@ -2,7 +2,7 @@ using CleanArchitecture.Application;
 using CleanArchitecture.Application.Common.Interfaces;
 using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Extensions;
-using CleanArchitecture.Infrastructure.Communication.Notification;
+using CleanArchitecture.Infrastructure.Communication.NotificationSender;
 using CleanArchitecture.Infrastructure.Identity;
 using CleanArchitecture.Infrastructure.Persistence;
 using CleanArchitecture.WebUI.Filters;

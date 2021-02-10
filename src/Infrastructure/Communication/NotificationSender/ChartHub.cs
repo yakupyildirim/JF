@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace CleanArchitecture.Infrastructure.Communication.Notification
+namespace CleanArchitecture.Infrastructure.Communication.NotificationSender
 {
 	public class ChartHub : Hub
 	{

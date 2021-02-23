@@ -40,8 +40,7 @@ namespace CleanArchitecture.Infrastructure.Identity
 
 			if (result.Succeeded)
 			{
-				Result.Data = user.Id;
-				return Result.Success();
+				return Result.Success(user.Id);
 			}
 			else
 			{

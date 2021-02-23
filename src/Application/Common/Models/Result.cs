@@ -9,9 +9,17 @@ namespace CleanArchitecture.Application.Common.Models
 		{
 			Succeeded = succeeded;
 			Errors = errors.ToArray();
+			Data = null;
 		}
 
-		public static object Data { get; set; }
+		internal Result(bool succeeded, IEnumerable<string> errors, object data)
+		{
+			Succeeded = succeeded;
+			Errors = errors.ToArray();
+			Data = data;
+		}
+
+		public object Data { get; set; }
 
 		public bool Succeeded { get; set; }
 
@@ -20,6 +28,11 @@ namespace CleanArchitecture.Application.Common.Models
 		public static Result Success()
 		{
 			return new Result(true, new string[] { });
+		}
+
+		public static Result Success(object data)
+		{
+			return new Result(true, new string[] { }, data);
 		}
 
 		public static Result Failure(IEnumerable<string> errors)

@@ -10,6 +10,11 @@ using Microsoft.Extensions.DependencyInjection;
 using CleanArchitecture.Infrastructure.Communication.EmailSender;
 using CleanArchitecture.Infrastructure.Communication.SmsSender;
 using CleanArchitecture.Infrastructure.Communication.NotificationSender;
+using DinkToPdf.Contracts;
+using DinkToPdf;
+using CleanArchitecture.Infrastructure.FileConverter.HtmlToPdf;
+using System.IO;
+using CleanArchitecture.Infrastructure.Utility;
 
 namespace CleanArchitecture.Infrastructure
 {
@@ -50,12 +55,18 @@ namespace CleanArchitecture.Infrastructure
 							.AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 			*/
 
+			var context = new CustomAssemblyLoadContext();
+			context.LoadUnmanagedLibrary(Path.Combine(Directory.GetCurrentDirectory(), @"CustomDLL\\libwkhtmltox.dll"));
+
 			services.AddTransient<IDateTime, DateTimeService>();
 			services.AddTransient<IIdentityService, IdentityService>();
 			services.AddTransient<ICommunication, ChartService>();
 			services.AddTransient<ICommunication, EmailService>();
 			services.AddTransient<ICommunication, SmsService>();
 			services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
+			services.AddTransient<IFileConverter, HtmlToPdfService>();
+			services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+
 
 
 			services.AddAuthentication()
